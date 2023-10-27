@@ -1,0 +1,85 @@
+= CloudBees action: Run a CloudBees CI job
+
+Use this action to trigger a CloudBees CI job. 
+To learn more, refer to the link:https://docs.cloudbees.com/docs/cloudbees-ci/latest/[CloudBees CI documentation].
+
+== Inputs
+
+[cols="1a,1a,1a,4a",options="header"]
+.Input details
+|===
+
+| Input name
+| Data type
+| Required?
+| Description
+
+| `url`
+| String
+| Yes
+| The CloudBees CI server URL.
+
+| `username`
+| String
+| Yes
+| The CloudBees CI username.
+
+| `token`
+| String
+| Yes
+| The CloudBees CI token.
+
+| `job-name`
+| String
+| Yes
+| The CloudBees CI job name.
+
+| `test-type`
+| String
+| No
+| Specifies the test type for generating a job test report.
+Supported test types are JUnit (`junit`) and TestNG (`testng`).
+
+| `test-result-location`
+| String
+| No
+| Specifies the test report file location.
+Accepts pattern matching, such as `my-dir/*/my-file`.
+
+| `parameters`
+| JSON string
+| No
+| Any additional CloudBees CI parameters, formatted as JSON data in key/value pairs.
+|===
+
+== Usage example
+
+In your YAML file, add:
+
+[source,yaml]
+----
+jobs:
+  my-cbci-job:
+    steps:
+    - name: Run a CloudBees CI job
+      uses: cloudbees-io/cbci-run-job@v2
+      with:
+        url: ${{ vars.CBCI_URL }}
+        username: ${{ secrets.CBCI_USERNAME }}
+        token: ${{ secrets.CBCI_TOKEN }}
+        job-name: "CloudBees_CI_job_name"
+        test-type: JUnit
+        test-result-location: junit-service*
+        parameters: '{"BRANCH_NAME":"main","ENV_NAME":"stage"}'
+
+----
+
+== License
+
+This code is made available under the 
+link:https://opensource.org/license/mit/[MIT license].
+
+== References
+
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform-actions/latest/[using actions in CloudBees workflows].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform/latest/[the CloudBees platform].

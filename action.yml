@@ -1,0 +1,44 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: cbci build actions
+inputs:
+  url:  # id of input
+    description: 'cbci url'
+    required: true
+  username:  # id of input
+    description: 'username'
+    required: true
+  token:  # id of input
+    description: 'token or API token'
+    required: true
+  job-name:  # id of input
+    description: 'job name'
+    required: true
+  test-type:  # id of input
+    description: 'test type'
+    default: ''
+  test-result-location:  # id of input
+    description: 'test result location'
+    default: ''
+  parameters:  # id of input
+    description: 'parameters'
+    default: '{}'
+  
+runs:
+  using: composite
+  steps:
+    - id: invoke-cbci-job
+      name: invoke-cbci-job
+      uses: docker://registry.saas-dev.beescloud.com/staging/cbci-actions:main-6bc0d4e7b30e524eaff2a4feb0ee0868ca8af7e6
+      shell: sh
+      env:
+        CONFIG_JSON: '{"metaInfo":{"url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
+        RUN_ID: ${{ cloudbees.run_id }}
+        JOB_ID: ${{ job.id }}
+        STEP_ID: ${{step.internal.id}}
+        DNS_URL: ${{ cloudbees.api.url }}
+        JWT_TOKEN: ${{ cloudbees.api.token }}
+      run: |
+        set -x
+        cd /app
+        ./cbci_actions_app invoke -b $CONFIG_JSON
