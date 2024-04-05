@@ -38,7 +38,7 @@ To learn more, refer to the link:https://docs.cloudbees.com/docs/cloudbees-ci/la
 | String
 | No
 | Specifies the test type for generating a job test report.
-Supported test types are JUnit (`junit`) and TestNG (`testng`).
+Supported test types are JUnit (`junit`), TestNG (`testng`) and GO ('go').
 
 | `test-result-location`
 | String
@@ -68,7 +68,7 @@ jobs:
         username: ${{ secrets.CBCI_USERNAME }}
         token: ${{ secrets.CBCI_TOKEN }}
         job-name: "CloudBees_CI_job_name"
-        test-type: JUnit
+        test-type: JUnit/TestNG/GO
         test-result-location: junit-service*
         parameters: '{"BRANCH_NAME":"main","ENV_NAME":"stage"}'
 
