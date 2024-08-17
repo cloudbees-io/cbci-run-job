@@ -29,7 +29,7 @@ runs:
   steps:
     - id: invoke-cbci-job
       name: invoke-cbci-job
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/cbci-actions:main-29979588fd94e65bd8e3c443e9e20881b32514a9
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/cbci-actions:CBP-4195-5fc612e777b2d0e3e7e79e82ae27a64444f34eec
       shell: sh
       env:
         CONFIG_JSON: '{"metaInfo":{"url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
