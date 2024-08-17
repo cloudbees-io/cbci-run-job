@@ -26,7 +26,7 @@ inputs:
 
 outputs:
   cbci_output:
-    value: ${{ steps.invoke-cbci-job.outputs.cbci_output_var }}
+    value: ${{ steps.invoke-cbci-job.outputs.jenkins_output_var }}
     description: CBCI env variable output
   
 runs:
