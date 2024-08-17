@@ -34,7 +34,7 @@ runs:
   steps:
     - id: invoke-cbci-job
       name: invoke-cbci-job
-      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/cbci-actions:CBP-4195-8cbafbb93fcc23a5157e2da9a4070d1f51fd996e
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/cbci-actions:CBP-4195-5b0112f215b52391a632ea2e60cb0787aa561247
       shell: sh
       env:
         CONFIG_JSON: '{"metaInfo":{"url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
