@@ -23,6 +23,11 @@ inputs:
   parameters:  # id of input
     description: 'parameters'
     default: '{}'
+
+outputs:
+cbci_output:
+  value: ${{ steps.invoke-cbci-job.outputs.cbci_output_var }}
+  description: CBCI env variable output
   
 runs:
   using: composite
