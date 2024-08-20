@@ -23,13 +23,18 @@ inputs:
   parameters:  # id of input
     description: 'parameters'
     default: '{}'
+
+outputs:
+  cbci_output:
+    value: ${{ steps.invoke-cbci-job.outputs.cbci_output_var }}
+    description: CBCI env variable output
   
 runs:
   using: composite
   steps:
     - id: invoke-cbci-job
       name: invoke-cbci-job
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/cbci-actions:main-29979588fd94e65bd8e3c443e9e20881b32514a9
+      uses: docker://public.ecr.aws/l7o7z1g8/actions/cbci-actions:main-bea27db83ecc8babd360cd9427b23a4c533c97c2
       shell: sh
       env:
         CONFIG_JSON: '{"metaInfo":{"url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
