@@ -52,7 +52,25 @@ Accepts pattern matching, such as `my-dir/*/my-file`.
 | Any additional CloudBees CI parameters, formatted as JSON data in key/value pairs.
 |===
 
-== Usage example
+== Outputs
+
+[cols="2a,1a,1a,3a",options="header"]
+.Output details
+|===
+
+| Output name
+| Data type
+| Required?
+| Description
+
+| `cbci_output`
+| String
+| No
+| Pass parameters from CloudBees CI to the CloudBees platform.
+
+|===
+
+== Usage examples
 
 In your YAML file, add:
 
@@ -74,6 +92,42 @@ jobs:
 
 ----
 
+In the following example, output is passed from CloudBees CI to the platform:
+
+[source,yaml,role="default-expanded"]
+----
+jobs:
+  CBCI-Output-Job:
+    outputs:
+      cbci_output: ${{ steps.my-output-job.outputs.cbci_output }}
+    steps:
+      - id: my-output-job
+        name: Run CBCI Job
+        uses: cloudbees-io/cbci-run-job@v2
+        with:
+          url: ${{ vars.CBCI_URL }}
+          username: ${{ secrets.CBCI_USERNAME }}
+          token: ${{ secrets.CBCI_TOKEN }}
+          job-name: cbci_job_with_output_name
+
+      - id: expose-output-cbci
+        name: Expose CBCI job output
+        uses: docker://exozet/jq:1.6-r0
+        run: |
+          echo "BUILD_NUMBER: ${{ fromJSON(steps.my-output-job.outputs.cbci_output).BUILD_NUMBER }}"
+          echo "TESTVAR: ${{ fromJSON(steps.my-output-job.outputs.cbci_output).TESTVAR }}"
+
+  Print-CBCI-Outputs:
+    needs: [CBCI-Output-Job]
+    steps:
+      - id: print-cbci-output
+        uses: docker://exozet/jq:1.6-r0
+        name: Print CBCI-Output-Job outputs
+        run: |
+          echo "BUILD_NUMBER: ${{ fromJSON(needs.CBCI-Output-Job.outputs.cbci_output).BUILD_NUMBER }}"
+          echo "TESTVAR: ${{ fromJSON(needs.CBCI-Output-Job.outputs.cbci_output).TESTVAR }}"
+----
+
 == License
 
 This code is made available under the 
@@ -81,5 +135,5 @@ link:https://opensource.org/license/mit/[MIT license].
 
 == References
 
-* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform-actions/latest/[using actions in CloudBees workflows].
-* Learn about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform/latest/[the CloudBees platform].
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/actions[using actions in CloudBees workflows].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[the CloudBees platform].
