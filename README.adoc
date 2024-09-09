@@ -78,8 +78,6 @@ Accepts pattern matching, such as `my-dir/*/my-file`.
 
 Replace `<STEP_ID>` with your step ID, and `<OUTPUT_PARAMETER>` with your parameter.
 
-|===
-
 == Usage examples
 
 In your YAML file, add:
