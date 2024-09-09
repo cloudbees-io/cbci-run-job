@@ -66,7 +66,17 @@ Accepts pattern matching, such as `my-dir/*/my-file`.
 | `cbci_output`
 | String
 | No
-| Pass parameters from CloudBees CI to the CloudBees platform.
+| A JSON string containing the output key/values exposed by the invoked CloudBees CI pipeline.^<<footnote,[1]>>^
+
+
+|===
+
+[#footnote]
+^[1]^ You must parse each output parameter in the following format:
+
+`fromJSON(steps.<STEP-ID>.outputs.cbci_output).<OUTPUT_PARAMETER>`
+
+Replace `<STEP_ID>` with your step ID, and `<OUTPUT_PARAMETER>` with your parameter.
 
 |===
 
@@ -92,7 +102,21 @@ jobs:
 
 ----
 
-In the following example, output is passed from CloudBees CI to the platform:
+In the following example, output is passed from {CI} to the platform.
+
+The jenkinsfile below is used to define the outputs:
+
+[source,groovy,role="default-expanded"]
+----
+node {
+    stage('Build') {
+        env.BUILD_NUMBER="1"
+        env.TESTVAR="Test"
+    }
+}
+----
+
+The platform workflow file below prints the `BUILD_NUMBER` and `TESTVAR` outputs from {CI}:
 
 [source,yaml,role="default-expanded"]
 ----
