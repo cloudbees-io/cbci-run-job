@@ -64,7 +64,7 @@ Accepts pattern matching, such as `my-dir/*/my-file`.
 | Description
 
 | `cbci_output`
-| String
+| JSON string
 | No
 | A JSON string containing the output key/values exposed by the invoked CloudBees CI pipeline.^<<footnote,[1]>>^
 
