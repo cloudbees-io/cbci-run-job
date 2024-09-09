@@ -100,7 +100,7 @@ jobs:
 
 ----
 
-In the following example, output is passed from {CI} to the platform.
+In the following example, output is passed from CloudBees CI to the platform.
 
 The jenkinsfile below is used to define the outputs:
 
@@ -114,7 +114,7 @@ node {
 }
 ----
 
-The platform workflow file below prints the `BUILD_NUMBER` and `TESTVAR` outputs from {CI}:
+The platform workflow file below prints the `BUILD_NUMBER` and `TESTVAR` outputs from CloudBees CI:
 
 [source,yaml,role="default-expanded"]
 ----
