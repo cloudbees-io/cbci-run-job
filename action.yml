@@ -2,18 +2,26 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
 name: cbci build actions
 inputs:
+  integration-name:
+    description: 'integration name'
+    required: false
+    default: ''
   url:  # id of input
     description: 'cbci url'
-    required: true
+    required: false
+    default: ''
   username:  # id of input
     description: 'username'
-    required: true
+    required: false
+    default: ''
   token:  # id of input
-    description: 'token or API token'
-    required: true
+    description: 'token'
+    required: false
+    default: ''
   job-name:  # id of input
     description: 'job name'
     required: true
+    default: ''
   test-type:  # id of input
     description: 'test type'
     default: ''
@@ -27,20 +35,21 @@ inputs:
 outputs:
   cbci_output:
     value: ${{ steps.invoke-cbci-job.outputs.cbci_output_var }}
-    description: CBCI env variable output
+    description: CBCI Controller env variable output
+
   
 runs:
   using: composite
   steps:
     - id: invoke-cbci-job
       name: invoke-cbci-job
-      uses: docker://public.ecr.aws/l7o7z1g8/actions/cbci-actions:main-4d65b78980ee995bff4f1736b79b4d0223ae446e
+      uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/cbci-actions:main-8cf5eef1ae403a395393eb52e7f36770c4d4fd37 
       shell: sh
       env:
-        CONFIG_JSON: '{"metaInfo":{"url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
+        CONFIG_JSON: '{"metaInfo":{"integrationName":"${{ inputs.integration-name }}","url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
         RUN_ID: ${{ cloudbees.run_id }}
         JOB_ID: ${{ job.id }}
-        STEP_ID: ${{step.internal.id}}
+        STEP_ID: ${{ step.internal.id }}
         DNS_URL: ${{ cloudbees.api.url }}
         JWT_TOKEN: ${{ cloudbees.api.token }}
       run: |
