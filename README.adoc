@@ -14,20 +14,25 @@ To learn more, refer to the link:https://docs.cloudbees.com/docs/cloudbees-ci/la
 | Required?
 | Description
 
+| `integration-name`
+| String
+| No
+| The Plugin Integration name. Note: If this is provided url/username/token fields will be ignored.
+
 | `url`
 | String
-| Yes
-| The CloudBees CI server URL.
+| No
+| The CloudBees CI server URL. Note: Only required if integration-name is empty.
 
 | `username`
 | String
-| Yes
-| The CloudBees CI username.
+| No
+| The CloudBees CI username. Note: Only required if integration-name is empty.
 
 | `token`
 | String
-| Yes
-| The CloudBees CI token.
+| No
+| The CloudBees CI token. Note: Only required if integration-name is empty.
 
 | `job-name`
 | String
@@ -38,7 +43,7 @@ To learn more, refer to the link:https://docs.cloudbees.com/docs/cloudbees-ci/la
 | String
 | No
 | Specifies the test type for generating a job test report.
-Supported test types are JUnit (`junit`), TestNG (`testng`) and GO (go).
+Supported test types are JUnit (`junit`) and TestNG (`testng`).
 
 | `test-result-location`
 | String
@@ -52,33 +57,7 @@ Accepts pattern matching, such as `my-dir/*/my-file`.
 | Any additional CloudBees CI parameters, formatted as JSON data in key/value pairs.
 |===
 
-== Outputs
-
-[cols="2a,1a,1a,3a",options="header"]
-.Output details
-|===
-
-| Output name
-| Data type
-| Required?
-| Description
-
-| `cbci_output`
-| String
-| No
-| A JSON string containing the output key/values exposed by the invoked CloudBees CI pipeline.^<<footnote,[1]>>^
-
-
-|===
-
-[#footnote]
-^[1]^ You must parse each output parameter in the following format:
-
-`fromJSON(steps.<STEP-ID>.outputs.cbci_output).<OUTPUT_PARAMETER>`
-
-Replace `<STEP_ID>` with your step ID, and `<OUTPUT_PARAMETER>` with your parameter.
-
-== Usage examples
+== Usage example
 
 In your YAML file, add:
 
@@ -94,62 +73,25 @@ jobs:
         username: ${{ secrets.CBCI_USERNAME }}
         token: ${{ secrets.CBCI_TOKEN }}
         job-name: "CloudBees_CI_job_name"
-        test-type: JUnit/TestNG/GO
+        test-type: JUnit
         test-result-location: junit-service*
         parameters: '{"BRANCH_NAME":"main","ENV_NAME":"stage"}'
-
 ----
+== Usage example for plugin integration
 
-=== Using output from CloudBees CI
+In your YAML file, add:
 
-In the following example, output is passed from CloudBees CI to the platform.
-
-The jenkinsfile below is used to define the outputs:
-
-[source,groovy,role="default-expanded"]
-----
-node {
-    stage('Build') {
-        env.BUILD_NUMBER="1"
-        env.TESTVAR="Test"
-    }
-}
-----
-
-The platform workflow file below prints the `BUILD_NUMBER` and `TESTVAR` outputs from CloudBees CI:
-
-[source,yaml,role="default-expanded"]
+[source,yaml]
 ----
 jobs:
-  CBCI-Output-Job:
-    outputs:
-      cbci_output: ${{ steps.my-output-job.outputs.cbci_output }}
+  my-cbci-plugin-job:
     steps:
-      - id: my-output-job
-        name: Run CBCI Job
-        uses: cloudbees-io/cbci-run-job@v2
-        with:
-          url: ${{ vars.CBCI_URL }}
-          username: ${{ secrets.CBCI_USERNAME }}
-          token: ${{ secrets.CBCI_TOKEN }}
-          job-name: cbci_job_with_output_name
-
-      - id: expose-output-cbci
-        name: Expose CBCI job output
-        uses: docker://exozet/jq:1.6-r0
-        run: |
-          echo "BUILD_NUMBER: ${{ fromJSON(steps.my-output-job.outputs.cbci_output).BUILD_NUMBER }}"
-          echo "TESTVAR: ${{ fromJSON(steps.my-output-job.outputs.cbci_output).TESTVAR }}"
-
-  Print-CBCI-Outputs:
-    needs: [CBCI-Output-Job]
-    steps:
-      - id: print-cbci-output
-        uses: docker://exozet/jq:1.6-r0
-        name: Print CBCI-Output-Job outputs
-        run: |
-          echo "BUILD_NUMBER: ${{ fromJSON(needs.CBCI-Output-Job.outputs.cbci_output).BUILD_NUMBER }}"
-          echo "TESTVAR: ${{ fromJSON(needs.CBCI-Output-Job.outputs.cbci_output).TESTVAR }}"
+    - name: Run a CloudBees CI job via plugin
+      uses: cloudbees-io/cbci-run-job@v2
+      with:
+        integration-name: ${{ vars.CBCI_INTEGRATION_NAME }}
+        job-name: "Integration_Job_Name"
+        parameters: '{"BRANCH_NAME":"main","ENV_NAME":"stage"}'
 ----
 
 == License
@@ -159,5 +101,5 @@ link:https://opensource.org/license/mit/[MIT license].
 
 == References
 
-* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/actions[using actions in CloudBees workflows].
-* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[the CloudBees platform].
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform-actions/latest/[using actions in CloudBees workflows].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-saas-platform/latest/[the CloudBees platform].
