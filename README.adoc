@@ -14,20 +14,25 @@ To learn more, refer to the link:https://docs.cloudbees.com/docs/cloudbees-ci/la
 | Required?
 | Description
 
+| `integration-name`
+| String
+| No
+| The Plugin Integration name. Note: If this is provided url/username/token fields will be ignored.
+
 | `url`
 | String
-| Yes
-| The CloudBees CI server URL.
+| No
+| The CloudBees CI server URL. Note: Only required if integration-name is empty.
 
 | `username`
 | String
-| Yes
-| The CloudBees CI username.
+| No
+| The CloudBees CI username. Note: Only required if integration-name is empty.
 
 | `token`
 | String
-| Yes
-| The CloudBees CI token.
+| No
+| The CloudBees CI token. Note: Only required if integration-name is empty.
 
 | `job-name`
 | String
@@ -99,6 +104,23 @@ jobs:
         parameters: '{"BRANCH_NAME":"main","ENV_NAME":"stage"}'
 
 ----
+== Usage example for plugin integration
+
+In your YAML file, add:
+
+[source,yaml]
+----
+jobs:
+  my-cbci-plugin-job:
+    steps:
+    - name: Run a CloudBees CI job via plugin
+      uses: cloudbees-io/cbci-run-job@v2
+      with:
+        integration-name: ${{ vars.CBCI_INTEGRATION_NAME }}
+        job-name: "Integration_Job_Name"
+        parameters: '{"BRANCH_NAME":"main","ENV_NAME":"stage"}'
+----
+
 
 === Using output from CloudBees CI
 
