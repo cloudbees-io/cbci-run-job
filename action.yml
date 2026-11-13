@@ -2,10 +2,6 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
 name: cbci build actions
 inputs:
-  integration-name:
-    description: 'integration name'
-    required: false
-    default: ''
   url:  # id of input
     description: 'cbci url'
     required: false
@@ -41,7 +37,7 @@ runs:
       uses: docker://public.ecr.aws/l7o7z1g8/actions/cbci-actions:main-041958959862e572fdbd2e66e07c37363c2eb07e
       shell: sh
       env:
-        CONFIG_JSON: '{"metaInfo":{"integrationName":"${{ inputs.integration-name }}","url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
+        CONFIG_JSON: '{"metaInfo":{"url":"${{ inputs.url }}","toolType":"CBCI","username":"${{ inputs.username }}","token":"${{ inputs.token }}","jobName":"${{ inputs.job-name }}","testType":"${{ inputs.test-type }}","fileName":"${{ inputs.test-result-location }}","parameters":${{ inputs.parameters }},"commitId":"${{ cloudbees.scm.sha }}"}}'
         RUN_ID: ${{ cloudbees.run_id }}
         JOB_ID: ${{ job.id }}
         STEP_ID: ${{step.internal.id}}
